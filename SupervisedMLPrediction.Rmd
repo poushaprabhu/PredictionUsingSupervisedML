@@ -1,0 +1,91 @@
+---
+title: "Supervised Machine Learning - Predicting marks scored based on hours of study"
+output: html_notebook
+---
+
+This is a simple linear regression model containing one independant variable and one dependant variables, study hours and marks scored respectively.
+
+The model developed is used to predict marks scored if one studies for 9.25 hours.
+
+First, importing data into the environment
+
+```{r}
+reqD<- read.csv("scores.csv")
+str(reqD)
+summary(reqD)
+```
+
+Splitting the required data into training and test set
+
+```{r}
+library(caTools)
+set.seed(54178)
+split<- sample.split(reqD$Scores,SplitRatio = 3/4)
+trainS<-subset(reqD,split==TRUE)
+testS<-subset(reqD,split==FALSE)
+head(trainS)
+head(testS)
+```
+
+Training the model using the training set of data
+
+```{r}
+ModeL<- lm(Scores~Hours,trainS)
+summary(ModeL)
+```
+
+Visually represing the training model
+
+```{r}
+library(ggplot2)
+library(scales)
+
+ggplot() +
+  geom_point(aes(x=trainS$Hours, y=trainS$Scores),
+             colour = 'red') +
+  geom_line (aes( x= trainS$Hours, y=predict(ModeL, newdata= trainS)),
+             colour = 'navy') +
+  ggtitle ('Hours Spent on study vs Marks scored (Training Set)') +
+  xlab ('Hours spent on study') +
+  ylab ('Marks scored') +
+  scale_x_continuous(limits = c(0, 10)) + 
+  scale_y_continuous(limits = c(0, 100)) 
+```
+
+Testing the model obtained using the testing set
+
+```{r}
+NewPred <- predict(ModeL,newdata = testS)
+Comparison <- as.data.frame(NewPred)
+Comparison$ActualMarks<-testS$Scores
+Comparison
+```
+
+Visuvalizing the linear regression model obtained for testing set
+
+```{r}
+ggplot() +
+  geom_point(aes(x=testS$Hours, y=testS$Scores),
+             colour = 'red') +
+  geom_line (aes( x= testS$Hours, y=predict(ModeL, newdata= testS)),
+             colour = 'navy') +
+  ggtitle ('Hours Spent on study vs Marks scored (Testing Set)') +
+  xlab ('Hours spent on study') +
+  ylab ('Marks scored') +
+  scale_x_continuous(limits = c(0, 10)) + 
+  scale_y_continuous(limits = c(0, 100)) 
+```
+
+Plotting predicted vs actual and visuvalizing the difference
+
+```{r}
+plot(Comparison$NewPred,type= "l",lty=1.8, col="red")
+lines(Comparison$ActualMarks,type = "l",lty=1.8,col="blue")
+```
+
+Predicting marks for 9.25 hours of study
+
+```{r}
+predict(ModeL,newdata = data.frame("Hours"=9.25))
+```
+
