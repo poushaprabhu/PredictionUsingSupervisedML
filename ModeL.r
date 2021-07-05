@@ -20,6 +20,10 @@ NewPred <- predict(ModeL,newdata = testS)
 Comparison <- as.data.frame(NewPred)
 Comparison$ActualMarks<-testS$Scores
 
+#Mean absolute error of the model
+library(Metrics)
+mae(testS$Scores,NewPred)
+
 #Plotting the predicted vs actual
 plot(Comparison$NewPred,type= "l",lty=1.8, col="red")
 lines(Comparison$ActualMarks,type = "l",lty=1.8,col="blue")

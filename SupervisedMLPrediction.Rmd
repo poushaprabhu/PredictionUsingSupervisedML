@@ -89,3 +89,11 @@ Predicting marks for 9.25 hours of study
 predict(ModeL,newdata = data.frame("Hours"=9.25))
 ```
 
+Mean absolute error of the model
+
+```{r}
+library(Metrics)
+mae(testS$Scores,NewPred)
+```
+
+
