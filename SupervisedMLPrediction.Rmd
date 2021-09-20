@@ -16,6 +16,7 @@ summary(reqD)
 ```
 
 Splitting the required data into training and test set
+caTools - Used to split and sudset the sample
 
 ```{r}
 library(caTools)
